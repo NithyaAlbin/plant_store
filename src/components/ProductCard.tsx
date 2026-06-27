@@ -1,38 +1,44 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { product } from "@/data/product";
 
 export default function ProductCard() {
   const [quantity, setQuantity] = useState(1);
-
-  const increase = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const decrease = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
+  const router = useRouter();
 
   const total = quantity * product.price;
 
+  function increase() {
+    setQuantity((prev) => prev + 1);
+  }
+
+  function decrease() {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
+  }
+
+  function handleBuyNow() {
+    router.push(`/checkout?quantity=${quantity}`);
+  }
+
   return (
-    <section className="bg-white py-20" id="product">
+    <section id="product" className="bg-white py-20">
       <div className="max-w-6xl mx-auto px-6">
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-14">
 
           <span className="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full font-semibold">
-            🌟 Currently Available
+            Currently Available
           </span>
 
-          <h2 className="text-5xl font-bold mt-6">
+          <h2 className="mt-6 text-4xl md:text-5xl font-bold">
             {product.name}
           </h2>
 
-          <p className="text-gray-600 mt-4 text-lg">
+          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
             {product.description}
           </p>
 
@@ -40,21 +46,27 @@ export default function ProductCard() {
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-          {/* Product Image */}
+          {/* Image */}
 
-          <div className="bg-green-50 rounded-3xl shadow-xl aspect-square flex flex-col justify-center items-center">
+          <div className="bg-green-50 rounded-3xl shadow-xl aspect-square flex items-center justify-center">
 
-            <div className="text-9xl">
-              🌳
+            <div className="text-center">
+
+              <div className="text-8xl">
+                🌳
+              </div>
+
+              <p className="mt-6 text-gray-500">
+                Product Image
+                <br />
+                (Coming Soon)
+              </p>
+
             </div>
-
-            <p className="mt-6 text-gray-500">
-              Product Image Coming Soon
-            </p>
 
           </div>
 
-          {/* Product Details */}
+          {/* Details */}
 
           <div>
 
@@ -62,25 +74,25 @@ export default function ProductCard() {
               ★★★★★
             </div>
 
-            <h3 className="text-4xl font-bold mt-4">
+            <h3 className="mt-4 text-4xl font-bold text-green-700">
               ₹{product.price}
             </h3>
 
-            <p className="text-gray-500 mt-2">
+            <p className="text-gray-500">
               Price per plant
             </p>
 
             <div className="mt-10">
 
-              <h4 className="font-semibold text-lg">
+              <p className="font-semibold mb-4">
                 Quantity
-              </h4>
+              </p>
 
-              <div className="flex items-center gap-4 mt-4">
+              <div className="flex items-center gap-4">
 
                 <button
                   onClick={decrease}
-                  className="w-12 h-12 rounded-xl bg-gray-200 text-2xl"
+                  className="w-12 h-12 rounded-xl bg-gray-200 hover:bg-gray-300"
                 >
                   -
                 </button>
@@ -91,7 +103,7 @@ export default function ProductCard() {
 
                 <button
                   onClick={increase}
-                  className="w-12 h-12 rounded-xl bg-green-700 text-white text-2xl"
+                  className="w-12 h-12 rounded-xl bg-green-700 text-white hover:bg-green-800"
                 >
                   +
                 </button>
@@ -112,7 +124,10 @@ export default function ProductCard() {
 
             </div>
 
-            <button className="mt-10 w-full bg-green-700 hover:bg-green-800 transition text-white py-4 rounded-xl font-semibold text-lg">
+            <button
+              onClick={handleBuyNow}
+              className="mt-10 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-xl text-lg font-semibold transition"
+            >
               Buy Now
             </button>
 
