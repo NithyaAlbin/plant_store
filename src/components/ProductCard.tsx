@@ -1,28 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { product } from "@/data/product";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { getProduct } from "@/data/getProduct";
 
 export default function ProductCard() {
+  const [product, setProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
-  const router = useRouter();
 
-  const total = quantity * product.price;
+  useEffect(() => {
+    async function loadProduct() {
+      const data = await getProduct();
+      setProduct(data);
+    }
 
-  function increase() {
-    setQuantity((prev) => prev + 1);
+    loadProduct();
+  }, []);
+
+  if (!product) {
+    return (
+      <section
+        id="product"
+        className="bg-white py-20 flex justify-center"
+      >
+        <h2 className="text-2xl font-semibold text-green-700">
+          Loading Product...
+        </h2>
+      </section>
+    );
   }
 
-  function decrease() {
+  const increase = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const decrease = () => {
     if (quantity > 1) {
       setQuantity((prev) => prev - 1);
     }
-  }
+  };
 
-  function handleBuyNow() {
-    router.push(`/checkout?quantity=${quantity}`);
-  }
+  const total = quantity * product.price;
 
   return (
     <section id="product" className="bg-white py-20">
@@ -31,10 +49,10 @@ export default function ProductCard() {
         <div className="text-center mb-14">
 
           <span className="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full font-semibold">
-            Currently Available
+            🌟 Currently Available
           </span>
 
-          <h2 className="mt-6 text-4xl md:text-5xl font-bold">
+          <h2 className="mt-6 text-4xl md:text-5xl font-bold text-gray-900">
             {product.name}
           </h2>
 
@@ -46,27 +64,23 @@ export default function ProductCard() {
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-          {/* Image */}
+          {/* Product Image */}
 
-          <div className="bg-green-50 rounded-3xl shadow-xl aspect-square flex items-center justify-center">
+          <div className="bg-green-50 rounded-3xl shadow-xl aspect-square flex flex-col items-center justify-center">
 
-            <div className="text-center">
-
-              <div className="text-8xl">
-                🌳
-              </div>
-
-              <p className="mt-6 text-gray-500">
-                Product Image
-                <br />
-                (Coming Soon)
-              </p>
-
+            <div className="text-8xl md:text-9xl">
+              🌳
             </div>
+
+            <p className="mt-6 text-gray-500 text-center">
+              Product Image
+              <br />
+              (We'll replace this later)
+            </p>
 
           </div>
 
-          {/* Details */}
+          {/* Product Details */}
 
           <div>
 
@@ -78,32 +92,32 @@ export default function ProductCard() {
               ₹{product.price}
             </h3>
 
-            <p className="text-gray-500">
+            <p className="text-gray-500 mt-2">
               Price per plant
             </p>
 
             <div className="mt-10">
 
-              <p className="font-semibold mb-4">
+              <h4 className="font-semibold text-lg mb-4">
                 Quantity
-              </p>
+              </h4>
 
               <div className="flex items-center gap-4">
 
                 <button
                   onClick={decrease}
-                  className="w-12 h-12 rounded-xl bg-gray-200 hover:bg-gray-300"
+                  className="w-12 h-12 rounded-xl bg-gray-200 hover:bg-gray-300 text-2xl transition"
                 >
-                  -
+                  −
                 </button>
 
-                <span className="text-2xl font-bold w-10 text-center">
+                <div className="w-12 text-center text-2xl font-bold">
                   {quantity}
-                </span>
+                </div>
 
                 <button
                   onClick={increase}
-                  className="w-12 h-12 rounded-xl bg-green-700 text-white hover:bg-green-800"
+                  className="w-12 h-12 rounded-xl bg-green-700 hover:bg-green-800 text-white text-2xl transition"
                 >
                   +
                 </button>
@@ -115,7 +129,7 @@ export default function ProductCard() {
             <div className="mt-10">
 
               <p className="text-gray-500">
-                Total
+                Total Amount
               </p>
 
               <h2 className="text-5xl font-bold text-green-700">
@@ -124,12 +138,13 @@ export default function ProductCard() {
 
             </div>
 
-            <button
-              onClick={handleBuyNow}
-              className="mt-10 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-xl text-lg font-semibold transition"
-            >
-              Buy Now
-            </button>
+            <Link href={`/checkout?quantity=${quantity}`}>
+
+              <button className="mt-10 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-xl text-lg font-semibold transition">
+                Buy Now
+              </button>
+
+            </Link>
 
           </div>
 

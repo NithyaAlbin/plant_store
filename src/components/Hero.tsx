@@ -1,12 +1,33 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getProduct } from "@/data/getProduct";
 
 export default function Hero() {
+  const [product, setProduct] = useState<any>(null);
+
+  useEffect(() => {
+    async function loadProduct() {
+      const data = await getProduct();
+      setProduct(data);
+    }
+
+    loadProduct();
+  }, []);
+
+  if (!product) {
+    return (
+      <section className="bg-gradient-to-br from-green-50 via-green-100 to-green-50 py-32">
+        <div className="text-center text-2xl font-semibold text-green-700">
+          Loading...
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-gradient-to-br from-green-50 via-green-100 to-green-50">
       <div className="max-w-7xl mx-auto px-6 py-16 lg:py-24">
-
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
           {/* LEFT */}
@@ -26,16 +47,26 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 text-lg text-gray-600 leading-8 max-w-xl mx-auto lg:mx-0">
-              We grow healthy grafted mango plants with care and deliver them safely across Kerala.
-              Every plant is selected and packed to ensure the best quality reaches your home.
+              {product.description}
             </p>
 
+            <div className="mt-8">
+              <span className="text-5xl font-bold text-green-700">
+                ₹{product.price}
+              </span>
+
+              <p className="text-gray-500 mt-2">
+                Price per plant
+              </p>
+            </div>
+
             <div className="mt-10">
-              <Link href="/checkout">
-                <button className="bg-green-700 hover:bg-green-800 transition text-white px-8 py-4 rounded-xl font-semibold shadow-lg">
-                  Shop Current Plant
-                </button>
-              </Link>
+              <a
+                href="#product"
+                className="inline-block bg-green-700 hover:bg-green-800 transition text-white px-8 py-4 rounded-xl font-semibold shadow-lg"
+              >
+                Shop Current Plant
+              </a>
             </div>
 
           </div>
@@ -61,7 +92,6 @@ export default function Hero() {
           </div>
 
         </div>
-
       </div>
     </section>
   );
